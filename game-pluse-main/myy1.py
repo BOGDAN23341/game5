@@ -2,6 +2,8 @@
 import pygame
 pygame.init()
 
+import random
+
 class Player():  # клас для створення шаблону персонажа
     def __init__(self, x, y, width, height, image):
         self.original_image = pygame.image.load(image)
@@ -32,11 +34,19 @@ background_image = pygame.transform.scale(background_image, (500, 500))
 
 # створення персонажа
 player = Player(100, 100, 50, 50, 'helper.png')
-portal = Player(250, 250, 100,100,'portal.png')
+portal = Player(2500, 2500, 100,100,'portal.png')
 moneta = Player(1000,1000,30,30,"moneta.png")   
 moneta2 = Player(1000,1000,30,30,"moneta.png")   
 moneta3 = Player(1000,1000,30,30,"moneta.png")   
-moneta4 = Player(1000,1000,30,30,"moneta.png")                
+moneta4 = Player(1000,1000,30,30,"moneta.png")   
+moneta5 = Player(1000,1000,30,30,"moneta.png")   
+moneta6 = Player(1000,1000,30,30,"moneta.png")   
+moneta7 = Player(1000,1000,30,30,"moneta.png")   
+moneta8 = Player(1000,1000,30,30,"moneta.png")   
+
+boss = Player(1000,1000, 100,30,"boss.png")      
+bullets = []       
+bullets_color = (255,0,0)
 # Створення ялинок
 # Ялинки для лівої частини (trees_left)
 # Ялинки для центральної частини (trees_center)
@@ -139,10 +149,16 @@ black = (0, 0, 0)
 # створення об'єкту "годинник" для встановлення частоти кадрів
 clock = pygame.time.Clock()
 count = 0
+count2 = 0
 moneta_collect = False
 moneta2_collect = False
 moneta3_collect = False
 moneta4_collect = False
+
+moneta5_collect = False
+moneta6_collect = False
+moneta7_collect = False
+moneta8_collect = False
 # головний цикл гри
 game = True
 while game:
@@ -178,7 +194,8 @@ while game:
         # відображення ялинок
         for tree in trees_center :
             window.blit(tree.image, (tree.rect.x, tree.rect.y))  
-        if count >= 4:  
+        if count >= 4:
+            portal.rect.x, portal.rect.y = 250,250  
             window.blit(portal.image, (portal.rect.x, portal.rect.y))  
     if level == 'left':
         for tree in trees_left: 
@@ -195,7 +212,123 @@ while game:
     if level == 'down':
         for tree in trees_down:   
             window.blit(tree.image, (tree.rect.x, tree.rect.y))   
-        window.blit(moneta3.image, (moneta3.rect.x, moneta3.rect.y))      
+        window.blit(moneta3.image, (moneta3.rect.x, moneta3.rect.y))   
+    
+    if level == 'final':
+        # генерація пуль боса
+        if len(bullets) < 40:
+            if random.randint(0,100) < 10:
+                x = 252
+                y = 220
+                bullets.append(pygame.Rect(x,y,20,20))  
+        
+        for d in bullets:
+            if d == bullets[0]:
+                d.x +=2
+                d.y +=2
+            elif d == bullets[1]:
+                d.y +=2
+            elif d == bullets[2]:
+                d.y +=2
+                d.x -=2
+            elif d == bullets[3]:
+                d.x -=2
+            elif d == bullets[4]:
+                d.x -=2
+                d.y -=2
+            elif d == bullets[5]:
+                d.y -=2
+            elif d == bullets[6]:
+                d.x -=2
+                d.y -=2
+            elif d == bullets[7]:
+                d.x +=2
+                d.x +=2
+            elif d == bullets[8]:
+                d.x +=2
+                d.y +=2
+                d.y -=2
+            elif d == bullets[9]:
+                d.y +=2
+                d.x -=2
+                d.y +=2
+                d.x +=2
+                d.x -=2
+            elif d == bullets[10]:
+                d.y +=2
+                d.y +=2
+                d.y +=2
+            elif d == bullets[11]:
+                d.y +=2
+            elif d == bullets[12]:
+                d.y +=2
+                d.x -=2
+            elif d == bullets[13]:
+                d.x -=2
+            elif d == bullets[14]:
+                d.x -=2
+                d.y -=2
+            elif d == bullets[15]:
+                d.y -=2
+            elif d == bullets[16]:
+                d.x -=2
+                d.y -=2
+            elif d == bullets[17]:
+                d.x +=2
+                d.x +=2
+            elif d == bullets[18]:
+                d.x +=2
+                d.y +=2
+                d.y -=2
+            elif d == bullets[19]:
+                d.y +=2
+                d.x -=2
+                d.y +=2
+                d.x +=2
+                d.x -=2
+            elif d == bullets[20]:
+                d.y +=2
+                d.y +=2
+                d.y +=2
+            
+            if d.x > 700 or d.x < -700 or d.y > 700 or d.y < -700:
+                d.x = 252
+                d.y = 220
+
+        window.blit(boss.image, (boss.rect.x, boss.rect.y))   
+        #================================================================
+        window.blit(moneta5.image, (moneta5.rect.x, moneta5.rect.y))
+        window.blit(moneta6.image, (moneta6.rect.x, moneta6.rect.y))
+        window.blit(moneta7.image, (moneta7.rect.x, moneta7.rect.y))
+        window.blit(moneta8.image, (moneta8.rect.x, moneta8.rect.y))
+        
+        for d in bullets:
+            if player.rect.colliderect(d):
+                game = False
+        
+
+        for b in bullets:
+            pygame.draw.rect(window,bullets_color,b)
+            
+        if player.rect.colliderect(moneta5.rect):
+            moneta5_collect = True
+            moneta5.rect.x = 2000
+            count2 += 1
+        if player.rect.colliderect(moneta6.rect):
+            moneta6_collect = True
+            moneta6.rect.x = 2000
+            count2 += 1
+        if player.rect.colliderect(moneta7.rect):
+            moneta7_collect = True
+            moneta7.rect.x = 2000
+            count2 += 1
+        if player.rect.colliderect(moneta8.rect):
+            moneta8_collect = True
+            moneta8.rect.x = 2000
+            count2 += 1
+        if count2 >= 4:
+            game = False
+             
             
                
     # Перехід між рівнями
@@ -242,11 +375,31 @@ while game:
         level = "final" 
         player.rect.x = 10 
         player.rect.x = 10 
+        portal.rect.x = 1000
+        portal.rect.y = 1000
+        moneta5.rect.x = 100
+        moneta5.rect.y = 100
+        moneta6.rect.x = 350
+        moneta6.rect.y = 350
+        moneta7.rect.x = 200
+        moneta7.rect.y = 200
+        moneta8.rect.x = 310
+        moneta8.rect.y = 310
 
-
-        
     
     
+    if player.rect.colliderect(moneta5.rect):
+        moneta5.rect.x = 2000  # переміщаємо монету за межі екрану
+        count += 1
+    if player.rect.colliderect(moneta6.rect):
+        moneta6.rect.x = 2000
+        count += 1
+    if player.rect.colliderect(moneta7.rect):
+        moneta7.rect.x = 2000
+        count += 1
+    if player.rect.colliderect(moneta8.rect):
+        moneta8.rect.x = 2000
+        count += 1
     
     
     player.move()
